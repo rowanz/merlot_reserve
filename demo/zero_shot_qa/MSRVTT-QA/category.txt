@@ -1,0 +1,20 @@
+music	0
+people	1
+gaming	2
+sports/actions	3
+news/events/politics	4
+education	5
+tv shows	6
+movie/comedy	7
+animation	8
+vehicles/autos	9
+howto	10
+travel	11
+science/technology	12
+animals/pets	13
+kids/family	14
+documentary	15
+food/drink	16
+cooking	17
+beauty/fashion	18
+advertisement	19
