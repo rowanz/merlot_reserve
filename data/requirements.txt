@@ -1,0 +1,14 @@
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2
+youtube-dl==2019.8.13
+requests==2.22.0
+scikit-video==1.1.11
+beautifulsoup4==4.8.0
+google-cloud-storage
+git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI
+yacs
+opencv-python-headless
+tensorflow==2.5.0
+scipy==1.7.0
+numpy==1.21.1
