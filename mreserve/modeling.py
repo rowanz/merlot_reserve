@@ -13,6 +13,7 @@ from mreserve.checkpoint import bf16_to_f32
 import clu.parameter_overview
 from dataclasses import dataclass
 from functools import partial
+import requests
 
 # Turn this on if you run out of memory. it will slow things down tho
 DO_GRADIENT_CHECKPOINTING = False
@@ -965,12 +966,18 @@ class PretrainedMerlotReserve:
 
         cache_path = os.path.join(cache_dir, param_fn)
         if not os.path.exists(cache_path):
-            storage_client = storage.Client()
-            bucket = storage_client.bucket('merlotreserve')
-            blob = bucket.blob(f'ckpts/{param_fn}')
-            print(f"DOWNLOADING! gs://merlotreserve/ckpts/{param_fn}", flush=True)
-            blob.download_to_filename(cache_path)
-            print("Done downloading")
+            try:
+                storage_client = storage.Client()
+                bucket = storage_client.bucket('merlotreserve')
+                blob = bucket.blob(f'ckpts/{param_fn}')
+                print(f"DOWNLOADING! gs://merlotreserve/ckpts/{param_fn}", flush=True)
+                blob.download_to_filename(cache_path)
+                print("Done downloading")
+            except:
+                url = 'https://storage.googleapis.com/merlotreserve/ckpts/large_resadapt'
+                r = requests.get(url, allow_redirects=True)
+                print("Done downloading")
+                open(cache_path, 'wb').write(r.content)
         params = load_checkpoint(cache_path)['params']
 
         config_fn = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'pretrain', 'configs', f'{model_name}.yaml')
