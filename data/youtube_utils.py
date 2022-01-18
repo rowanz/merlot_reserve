@@ -232,12 +232,6 @@ def channel_to_video_ids(channel_id):
     return hidden_playlist['entries']
 
 
-def get_youtube():
-    cs_key = "AIzaSyDX7wGCiyh0CPyFHnT_czUWggGY_hQV8Ho"
-    ai2key = 'AIzaSyAtuO9A2bnK-1lH7P981r98b1Ri-iDVwno'
-    return googleapiclient.discovery.build('youtube', 'v3', developerKey=cs_key)
-
-
 def ydl_download(id, ydl_opts):
     """
     Downloads from YDL but with error handling and shit
@@ -370,71 +364,3 @@ def download_video(id, cache_path):
     if ydl_download(id, ydl_opts):
         return os.path.join(cache_path, f'{id}.mp4')
     return None
-
-
-def youtube_search(youtube_api, q, relatedToVideoId=None, channelId=None, location=None, locationRadius=None,
-                   order='relevance',
-                   publishedAfter=None, publishedBefore=None, relevanceLanguage='en-us', safeSearch='moderate',
-                   topicId=None,
-                   type='video', videoCaption='any', videoCategoryId=None, videoDefinition=None, videoDimension='2d',
-                   videoDuration='medium', pageToken=None):
-    """
-    :param q: string The q parameter specifies the query term to search for. Your request can also use the Boolean NOT (-) and OR (|) operators to exclude videos or to find videos that are associated with one of several search terms. For example, to search for videos matching either "boating" or "sailing", set the q parameter value to boating|sailing. Similarly, to search for videos matching either "boating" or "sailing" but not "fishing", set the q parameter value to boating|sailing -fishing. Note that the pipe character must be URL-escaped when it is sent in your API request. The URL-escaped value for the pipe character is %7C.
-    :param relatedToVideoId: string The relatedToVideoId parameter retrieves a list of videos that are related to the video that the parameter value identifies. The parameter value must be set to a YouTube video ID and, if you are using this parameter, the type parameter must be set to video. Note that if the relatedToVideoId parameter is set, the only other supported parameters are part, maxResults, pageToken, regionCode, relevanceLanguage, safeSearch, type (which must be set to video), and fields.
-    :param channelId: string The channelId parameter indicates that the API response should only contain resources created by the channel.
-    :param location: 	string The location parameter, in conjunction with the locationRadius parameter, defines a circular geographic area and also restricts a search to videos that specify, in their metadata, a geographic location that falls within that area. The parameter value is a string that specifies latitude/longitude coordinates e.g. (37.42307,-122.08427). The location parameter value identifies the point at the center of the area. The locationRadius parameter specifies the maximum distance that the location associated with a video can be from that point for the video to still be included in the search results. The API returns an error if your request specifies a value for the location parameter but does not also specify a value for the locationRadius parameter.
-    :param locationRadius: string The locationRadius parameter, in conjunction with the location parameter, defines a circular geographic area.
-    :param order: string The order parameter specifies the method that will be used to order resources in the API response. The default value is relevance. Acceptable values are date, rating, relevance, title, videoCount, viewCount
-    :param publishedAfter: datetime The publishedAfter parameter indicates that the API response should only contain resources created at or after the specified time. The value is an RFC 3339 formatted date-time value (1970-01-01T00:00:00Z).
-    :param publishedBefore: datetime The publishedBefore parameter indicates that the API response should only contain resources created before or at the specified time. The value is an RFC 3339 formatted date-time value (1970-01-01T00:00:00Z).
-    :param relevanceLanguage: string The relevanceLanguage parameter instructs the API to return search results that are most relevant to the specified language. The parameter value is typically an ISO 639-1 two-letter language code. However, you should use the values zh-Hans for simplified Chinese and zh-Hant for traditional Chinese. Please note that results in other languages will still be returned if they are highly relevant to the search query term.
-    :param safeSearch: string The safeSearch parameter indicates whether the search results should include restricted content as well as standard content. Acceptable values are: moderate – YouTube will filter some content from search results and, at the least, will filter content that is restricted in your locale. Based on their content, search results could be removed from search results or demoted in search results. This is the default parameter value. none – YouTube will not filter the search result set. strict – YouTube will try to exclude all restricted content from the search result set. Based on their content, search results could be removed from search results or demoted in search results.
-    :param topicId: string The topicId parameter indicates that the API response should only contain resources associated with the specified topic. The value identifies a Freebase topic ID. Due to the deprecation of Freebase and the Freebase API, the topicId parameter started working differently as of February 27, 2017. At that time, YouTube started supporting a small set of curated topic IDs, and you can only use that smaller set of IDs as values for this parameter.
-    :param type: string The type parameter restricts a search query to only retrieve a particular type of resource. The value is a comma-separated list of resource types. The default value is video,channel,playlist.
-    :param videoCaption: string The videoCaption parameter indicates whether the API should filter video search results based on whether they have captions. If you specify a value for this parameter, you must also set the type parameter's value to video. Acceptable values are: any – Do not filter results based on caption availability. closedCaption – Only include videos that have captions. none – Only include videos that do not have captions.
-    :param videoCategoryId: string The videoCategoryId parameter filters video search results based on their category. If you specify a value for this parameter, you must also set the type parameter's value to video.
-    :param videoDefinition: string The videoDefinition parameter lets you restrict a search to only include either high definition (HD) or standard definition (SD) videos. HD videos are available for playback in at least 720p, though higher resolutions, like 1080p, might also be available. If you specify a value for this parameter, you must also set the type parameter's value to video. Acceptable values are: any – Return all videos, regardless of their resolution. high – Only retrieve HD videos. standard – Only retrieve videos in standard definition.
-    :param videoDimension: The videoDimension parameter lets you restrict a search to only retrieve 2D or 3D videos. If you specify a value for this parameter, you must also set the type parameter's value to video. Acceptable values are: 2d – Restrict search results to exclude 3D videos. 3d – Restrict search results to only include 3D videos. any – Include both 3D and non-3D videos in returned results. This is the default value.
-    :param videoDuration: string The videoDuration parameter filters video search results based on their duration. If you specify a value for this parameter, you must also set the type parameter's value to video. Acceptable values are: any – Do not filter video search results based on their duration. This is the default value. long – Only include videos longer than 20 minutes. medium – Only include videos that are between four and 20 minutes long (inclusive). short – Only include videos that are less than four minutes long.
-    :param pageToken: string The pageToken parameter identifies a specific page in the result set that should be returned. In an API response, the nextPageToken and prevPageToken properties identify other pages that could be retrieved.
-    :return: iterate through the results
-    """
-
-    kwargs = {'part': 'snippet', 'maxResults': 50, 'q': q, 'relatedToVideoId': relatedToVideoId, 'channelId': channelId,
-              'location': location, 'locationRadius': locationRadius,
-              'order': order, 'publishedAfter': publishedAfter, 'publishedBefore': publishedBefore,
-              'relevanceLanguage': relevanceLanguage,
-              'safeSearch': safeSearch, 'topicId': topicId, 'type': type, 'videoCaption': videoCaption,
-              'videoCategoryId': videoCategoryId,
-              'videoDefinition': videoDefinition, 'videoDimension': videoDimension, 'videoDuration': videoDuration,
-              'pageToken': pageToken}
-    # fail_count = 0
-    while True:
-        try:
-            response = youtube_api.search().list(
-                **{k: v for k, v in kwargs.items() if v}
-            ).execute()
-        except HttpError as e:
-            print("Error {}".format(str(e)))
-            # if fail_count == 0:
-            #     print("Sleeping")
-            #     time.sleep(1)
-            #     continue
-            # else:
-            assert False
-            print('oh no! {}'.format(kwargs))
-            return
-
-        # fail_count = 0
-        if 'nextPageToken' not in response:
-            return
-
-        for item in response['items']:
-            if item['id']['kind'] == 'youtube#video':
-                yield item
-        kwargs['pageToken'] = response['nextPageToken']
-
-
-if __name__ == '__main__':
-    everything = read_vtt('video_quality_filter/videos/FAYX0hj5yig.en.vtt')
-    # everything = read_vtt('narratives/videos/BPapKXfvRQo.en.vtt')
