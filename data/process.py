@@ -24,7 +24,7 @@ from mreserve.lowercase_encoder import get_encoder
 import subprocess
 import librosa
 import scipy.signal.windows
-from data.offset_model import predict_offsets, get_features
+from data.offset_model.model import predict_offsets, get_features
 from scipy.io import wavfile
 import torchvision.models as models
 import torch
