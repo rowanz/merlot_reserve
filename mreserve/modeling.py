@@ -941,7 +941,6 @@ class PretrainedMerlotReserve:
         """
         from mreserve.checkpoint import load_checkpoint
         import os
-        from google.cloud import storage
         import yaml
 
         if model_name not in ('base', 'large'):
@@ -965,12 +964,22 @@ class PretrainedMerlotReserve:
 
         cache_path = os.path.join(cache_dir, param_fn)
         if not os.path.exists(cache_path):
-            storage_client = storage.Client()
-            bucket = storage_client.bucket('merlotreserve')
-            blob = bucket.blob(f'ckpts/{param_fn}')
-            print(f"DOWNLOADING! gs://merlotreserve/ckpts/{param_fn}", flush=True)
-            blob.download_to_filename(cache_path)
+            try:
+                from google.cloud import storage
+                storage_client = storage.Client()
+                bucket = storage_client.bucket('merlotreserve')
+                blob = bucket.blob(f'ckpts/{param_fn}')
+                print(f"DOWNLOADING! gs://merlotreserve/ckpts/{param_fn}", flush=True)
+                blob.download_to_filename(cache_path)
+            except:
+                import requests
+                print(f"DOWNLOADING {param_fn} using requests", flush=True)
+                r = requests.get(f'https://storage.googleapis.com/merlotreserve/ckpts/{param_fn}', stream=True)
+                with open(cache_path, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=1000):
+                        f.write(chunk)
             print("Done downloading")
+
         params = load_checkpoint(cache_path)['params']
 
         config_fn = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'pretrain', 'configs', f'{model_name}.yaml')
