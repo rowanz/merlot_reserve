@@ -239,9 +239,9 @@ class MerlotReserveTVQA(MerlotReserve):
         #     return logits_from_audio, logits_from_text
 
 
-        x = jnp.concatenate([textonly_inputs['x'], audio_inputs['x']], 0)
-        coords = jnp.concatenate([textonly_inputs['rotary_coords'], audio_inputs['rotary_coords']], 0)
-        attnmask = jnp.concatenate([textonly_inputs['attention_mask'], audio_inputs['attention_mask']], 0)
+        x = jnp.concatenate([audio_inputs['x'], textonly_inputs['x']], 0)
+        coords = jnp.concatenate([audio_inputs['rotary_coords'], textonly_inputs['rotary_coords']], 0)
+        attnmask = jnp.concatenate([audio_inputs['attention_mask'], textonly_inputs['attention_mask']], 0)
 
         joint_enc = self.joint_transformer(x, rotary_coords=coords, attention_mask=attnmask)['seq']
         joint_enc = joint_enc[:, :joint_seq_len].reshape(batch_size * 2 * num_ans_per, joint_seq_len, self.hidden_size)

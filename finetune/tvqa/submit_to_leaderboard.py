@@ -152,15 +152,15 @@ class MerlotReserveTVQA(MerlotReserve):
         audio_inputs['attention_mask'] = jnp.concatenate([audio_inputs['attention_mask'][:, :, :joint_seq_len],
                                                           audio_inputs['attention_mask'][:, :, start_imgs:]], 2)
         #############################################################################################################
-        x = jnp.concatenate([textonly_inputs['x'], audio_inputs['x']], 0)
-        coords = jnp.concatenate([textonly_inputs['rotary_coords'], audio_inputs['rotary_coords']], 0)
-        attnmask = jnp.concatenate([textonly_inputs['attention_mask'], audio_inputs['attention_mask']], 0)
+        x = jnp.concatenate([audio_inputs['x'], textonly_inputs['x']], 0)
+        coords = jnp.concatenate([audio_inputs['rotary_coords'], textonly_inputs['rotary_coords']], 0)
+        attnmask = jnp.concatenate([audio_inputs['attention_mask'], textonly_inputs['attention_mask']], 0)
 
         joint_enc = self.joint_transformer(x, rotary_coords=coords, attention_mask=attnmask)['seq']
         joint_enc = joint_enc[:, :joint_seq_len].reshape(batch_size * 2 * num_ans_per, joint_seq_len, self.hidden_size)
 
         # Pool from the right tokens
-        pool_idx = jnp.argmax((jnp.concatenate([text_toks, audio_toks], 0) == MASK).astype(jnp.float32), 1)
+        pool_idx = jnp.argmax((jnp.concatenate([audio_toks, text_toks], 0) == MASK).astype(jnp.float32), 1)
         pooled_h = joint_enc[jnp.arange(batch_size * 2 * num_ans_per), pool_idx]
         joint_enc = jnp.squeeze(self.proj(pooled_h), -1)
 
