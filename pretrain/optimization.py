@@ -1,5 +1,5 @@
 import optax
-from optax import OptState, GradientTransformation
+from optax import GradientTransformation
 from optax._src.base import NO_PARAMS_MSG
 import jax
 import chex
@@ -14,7 +14,7 @@ import numpy as np
 from typing import NamedTuple, Any
 
 
-class ScaleByAdamState(OptState):
+class ScaleByAdamState(NamedTuple):
     """State for the Adam algorithm."""
     count: chex.Array
     mu: optax.Updates

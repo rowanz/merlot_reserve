@@ -12,7 +12,7 @@ sys.path.append('../')
 from pretrain.optimization import *
 
 
-class DecayedWeightsDeltaState(OptState):
+class DecayedWeightsDeltaState(NamedTuple):
     """Overall state of the gradient transformation."""
     orig_params: chex.Array  # Momentum
 
