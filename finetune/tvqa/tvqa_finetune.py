@@ -247,7 +247,7 @@ class MerlotReserveTVQA(MerlotReserve):
         joint_enc = joint_enc[:, :joint_seq_len].reshape(batch_size * 2 * num_ans_per, joint_seq_len, self.hidden_size)
 
         # Pool from the right tokens
-        pool_idx = jnp.argmax((jnp.concatenate([text_toks, audio_toks], 0) == MASK).astype(jnp.float32), 1)
+        pool_idx = jnp.argmax((jnp.concatenate([audio_toks, text_toks], 0) == MASK).astype(jnp.float32), 1)
         pooled_h = joint_enc[jnp.arange(batch_size * 2 * num_ans_per), pool_idx]
         joint_enc = jnp.squeeze(self.proj(pooled_h), -1)
 
