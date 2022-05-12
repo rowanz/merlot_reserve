@@ -14,3 +14,5 @@ A few pieces that could be useful:
 * [process.py](process.py) converts audio into spectrograms
 * [process.py](process.py) extracts frames from videos
 * [process.py](process.py) also calls a lightweight MobileNet V2 CNN to remove videos whose images seem too similar
+Also:
+* [download_youtube.py](download_youtube.py) is a wrapper around YouTube-DL that you could use for downloading videos.
