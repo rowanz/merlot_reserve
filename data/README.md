@@ -9,6 +9,8 @@ The rough workflow:
 * Use [process.py](process.py) to convert them into tfrecord format
 * Then you can train the model.
 
+Note: This issue https://github.com/ytdl-org/youtube-dl/issues/30710 might mean you need to use something else, like yt-dlp instead of youtube-dl.
+
 A few pieces that could be useful:
 * Our model for slightly improving the timing of YouTube ASR: [offset_model](offset_model)
 * [process.py](process.py) converts audio into spectrograms
